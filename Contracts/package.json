@@ -1,16 +1,29 @@
 {
-  "name": "contracts",
+  "name": "healthlink-contracts",
   "version": "1.0.0",
-  "description": "",
+  "description": "HealthLink Decentralized Telemedicine Platform Smart Contracts",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "compile": "hardhat compile",
+    "deploy": "hardhat run scripts/deploy.ts --network hardhat",
+    "deploy:localhost": "hardhat run scripts/deploy.ts --network localhost",
+    "test": "hardhat test"
   },
-  "keywords": [],
+  "keywords": [
+    "solidity",
+    "hardhat",
+    "telemedicine",
+    "blockchain"
+  ],
   "author": "",
-  "license": "ISC",
-  "type": "commonjs",
+  "license": "MIT",
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.9.6"
+  },
   "devDependencies": {
-    "hardhat": "^3.0.4"
+    "@nomicfoundation/hardhat-toolbox": "^3.0.0",
+    "hardhat": "^2.19.0",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.9.2"
   }
 }
