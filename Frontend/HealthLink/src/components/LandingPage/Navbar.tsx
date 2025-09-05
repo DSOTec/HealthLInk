@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
-import { useWallet } from '../../contexts/WalletContext';
+import { Link } from 'react-scroll';
+import ThemeToggle from '../common/ThemeToggle';
 
 interface NavbarProps {
   className?: string;
@@ -8,164 +10,136 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ className = '' }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { isConnected, walletAddress, connectWallet, isLoading } = useWallet();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
   };
 
-  const handleConnectWallet = async () => {
-    try {
-      await connectWallet();
-    } catch (error: any) {
-      alert(error.message);
-    }
-  };
-
-  const formatAddress = (address: string) => {
-    return `${address.slice(0, 6)}...${address.slice(-4)}`;
-  };
+  const menuItems = [
+    { name: 'Home', to: 'telemedicine-hero', offset: -80 },
+    { name: 'How MarpeLink Works', to: 'how-it-works', offset: -80 },
+    { name: 'Contact', to: 'footer', offset: -80 }
+  ];
 
   return (
-    <nav className={`bg-white shadow-sm border-b border-gray-100 ${className}`}>
+    <motion.nav 
+      className={`fixed top-0 w-full z-50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm shadow-sm transition-colors duration-200 ${className}`}
+      initial={{ y: -100 }}
+      animate={{ y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+        <div className="flex justify-between items-center h-16 sm:h-20">
           {/* Logo */}
-          <div className="flex items-center">
-            <div className="flex items-center space-x-2">
-              <div className="w-8 h-8 bg-cyan-500 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">H</span>
+          <motion.div 
+            className="flex items-center"
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.2 }}
+          >
+            <div className="flex items-center space-x-2 sm:space-x-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-primary-500 to-green-500 rounded-lg flex items-center justify-center">
+                <span className="text-white font-bold text-sm">M</span>
               </div>
-              <span className="text-xl font-semibold text-gray-900">
-                HealthLink
+              <span className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white">
+                MarpeLink
               </span>
             </div>
-          </div>
+          </motion.div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:block">
-            <div className="ml-10 flex items-baseline space-x-8">
-              <a
-                href="#features"
-                className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors duration-200"
-              >
-                Features
-              </a>
-              <a
-                href="#about"
-                className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors duration-200"
-              >
-                About
-              </a>
-              <a
-                href="#contact"
-                className="text-gray-600 hover:text-gray-900 px-3 py-2 text-sm font-medium transition-colors duration-200"
-              >
-                Contact
-              </a>
+            <div className="ml-10 flex items-baseline space-x-6 lg:space-x-8">
+              {menuItems.map((item, index) => (
+                <motion.div
+                  key={item.name}
+                  initial={{ opacity: 0, y: -20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  <Link
+                    to={item.to}
+                    spy={true}
+                    smooth={true}
+                    offset={item.offset}
+                    duration={500}
+                    className="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 px-3 py-2 text-sm font-medium transition-colors duration-200 cursor-pointer relative group"
+                    activeClass="text-primary-600 dark:text-primary-400"
+                  >
+                    {item.name}
+                    <span className="absolute bottom-0 left-0 w-0 h-0.5 bg-primary-500 transition-all duration-200 group-hover:w-full"></span>
+                  </Link>
+                </motion.div>
+              ))}
             </div>
           </div>
 
-          {/* Desktop Wallet Button */}
+          {/* Desktop Theme Toggle */}
           <div className="hidden md:flex items-center space-x-4">
-            {!isConnected ? (
-              <button
-                type="button"
-                onClick={handleConnectWallet}
-                disabled={isLoading}
-                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
-              >
-                {isLoading ? (
-                  <>
-                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                    Connecting...
-                  </>
-                ) : (
-                  'Connect Wallet'
-                )}
-              </button>
-            ) : (
-              <div className="text-sm font-medium text-gray-700">
-                {formatAddress(walletAddress!)}
-              </div>
-            )}
+            <ThemeToggle size="md" />
           </div>
 
           {/* Mobile menu button */}
-          <div className="md:hidden">
-            <button
+          <div className="md:hidden flex items-center space-x-2">
+            <ThemeToggle size="sm" />
+            <motion.button
               onClick={toggleMenu}
-              className="inline-flex items-center justify-center p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
-              aria-expanded="false"
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-600 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-100 dark:hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary-500 transition-colors duration-200"
+              aria-expanded={isMenuOpen}
+              whileTap={{ scale: 0.95 }}
             >
               <span className="sr-only">Open main menu</span>
-              {isMenuOpen ? (
-                <X className="block h-6 w-6" aria-hidden="true" />
-              ) : (
-                <Menu className="block h-6 w-6" aria-hidden="true" />
-              )}
-            </button>
+              <motion.div
+                animate={{ rotate: isMenuOpen ? 180 : 0 }}
+                transition={{ duration: 0.2 }}
+              >
+                {isMenuOpen ? (
+                  <X className="block h-6 w-6" aria-hidden="true" />
+                ) : (
+                  <Menu className="block h-6 w-6" aria-hidden="true" />
+                )}
+              </motion.div>
+            </motion.button>
           </div>
         </div>
       </div>
 
       {/* Mobile Navigation Menu */}
-      {isMenuOpen && (
-        <div className="md:hidden">
-          <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white border-t border-gray-100">
-            <a
-              href="#features"
-              className="text-gray-600 hover:text-gray-900 block px-3 py-2 text-base font-medium"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Features
-            </a>
-            <a
-              href="#about"
-              className="text-gray-600 hover:text-gray-900 block px-3 py-2 text-base font-medium"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              About
-            </a>
-            <a
-              href="#contact"
-              className="text-gray-600 hover:text-gray-900 block px-3 py-2 text-base font-medium"
-              onClick={() => setIsMenuOpen(false)}
-            >
-              Contact
-            </a>
-          </div>
-          <div className="pt-4 pb-3 border-t border-gray-200">
-            <div className="flex items-center px-5">
-              {!isConnected ? (
-                <button
-                  type="button"
-                  onClick={() => {
-                    handleConnectWallet();
-                    setIsMenuOpen(false);
-                  }}
-                  disabled={isLoading}
-                  className="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+      <AnimatePresence>
+        {isMenuOpen && (
+          <motion.div 
+            className="md:hidden"
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3 bg-white/95 dark:bg-gray-900/95 backdrop-blur-sm border-t border-gray-100 dark:border-gray-700">
+              {menuItems.map((item, index) => (
+                <motion.div
+                  key={item.name}
+                  initial={{ opacity: 0, x: -20 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ duration: 0.3, delay: index * 0.1 }}
                 >
-                  {isLoading ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                      Connecting...
-                    </>
-                  ) : (
-                    'Connect Wallet'
-                  )}
-                </button>
-              ) : (
-                <div className="w-full text-center text-sm font-medium text-gray-700">
-                  {formatAddress(walletAddress!)}
-                </div>
-              )}
+                  <Link
+                    to={item.to}
+                    spy={true}
+                    smooth={true}
+                    offset={item.offset}
+                    duration={500}
+                    className="text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 hover:bg-gray-50 dark:hover:bg-gray-800 block px-3 py-3 text-base font-medium cursor-pointer transition-colors duration-200 rounded-md"
+                    activeClass="text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20"
+                    onClick={() => setIsMenuOpen(false)}
+                  >
+                    {item.name}
+                  </Link>
+                </motion.div>
+              ))}
             </div>
-          </div>
-        </div>
-      )}
-    </nav>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.nav>
   );
 };
 

@@ -27,7 +27,7 @@ const Footer: React.FC<FooterProps> = ({ className = '' }) => {
   ];
 
   return (
-    <footer className={`bg-slate-800 text-white ${className}`}>
+    <footer id="footer" className={`bg-slate-800 dark:bg-gray-950 text-white transition-colors duration-200 ${className}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Brand Section */}
@@ -38,7 +38,7 @@ const Footer: React.FC<FooterProps> = ({ className = '' }) => {
                 <Heart className="w-5 h-5 text-white" />
               </div>
               <span className="text-xl font-semibold">
-                HealthLink
+                MarpeLink
               </span>
             </div>
             
@@ -105,7 +105,7 @@ const Footer: React.FC<FooterProps> = ({ className = '' }) => {
           <div className="flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
             {/* Copyright */}
             <div className="text-gray-400 text-sm">
-              © 2024 HealthLink. All rights reserved. Built on blockchain for your security.
+              © 2024 MarpeLink. All rights reserved. Built on blockchain for your security.
             </div>
 
             {/* Newsletter Signup */}

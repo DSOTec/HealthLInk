@@ -25,9 +25,9 @@ const DoctorNavbar: React.FC = () => {
           <div className="flex items-center">
             <div className="flex-shrink-0 flex items-center">
               <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-blue-500 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-sm">H</span>
+                <span className="text-white font-bold text-sm">M</span>
               </div>
-              <span className="ml-2 text-xl font-bold text-gray-900">HealthLink</span>
+              <span className="ml-2 text-xl font-bold text-gray-900">MarpeLink</span>
               <span className="ml-2 text-sm font-medium text-green-600 bg-green-100 px-2 py-1 rounded-full">
                 Doctor Portal
               </span>

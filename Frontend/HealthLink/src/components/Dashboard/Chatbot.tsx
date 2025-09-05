@@ -59,7 +59,7 @@ const Chatbot: React.FC<ChatbotProps> = ({ messages, onSendMessage }) => {
             <span className="text-white text-lg">🤖</span>
           </div>
           <div>
-            <h3 className="text-white font-semibold">HealthLink AI Assistant</h3>
+            <h3 className="text-white font-semibold">MarpeLink AI Assistant</h3>
             <p className="text-blue-100 text-sm">Always here to help</p>
           </div>
           <div className="ml-auto">

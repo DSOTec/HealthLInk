@@ -1,18 +1,53 @@
 import React from 'react';
+import { useNavigate } from 'react-router';
+import { motion } from 'framer-motion';
 import { Stethoscope, Shield, Brain, Users } from 'lucide-react';
+import { useWallet } from '../../contexts/WalletContext';
 
 interface HeroProps {
   className?: string;
 }
 
 const TelemedicineHero: React.FC<HeroProps> = ({ className = '' }) => {
+  const navigate = useNavigate();
+  const { connectWallet, isLoading } = useWallet();
+
+  const handlePatientStart = async () => {
+    try {
+      localStorage.setItem('marpelink_user_type', 'patient');
+      await connectWallet();
+      navigate('/dashboard');
+    } catch (error: any) {
+      alert(error.message);
+    }
+  };
+
+  const handleDoctorStart = async () => {
+    try {
+      localStorage.setItem('marpelink_user_type', 'doctor');
+      await connectWallet();
+      navigate('/doctor/dashboard');
+    } catch (error: any) {
+      alert(error.message);
+    }
+  };
   return (
-    <section className={`bg-gray-50 py-12 lg:py-20 ${className}`}>
+    <section id="telemedicine-hero" className={`bg-gray-50 dark:bg-gray-800 py-12 lg:py-20 transition-colors duration-200 ${className}`}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="lg:grid lg:grid-cols-2 lg:gap-12 lg:items-center">
           {/* Left Content */}
-          <div className="mb-12 lg:mb-0">
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 leading-tight">
+          <motion.div 
+            className="mb-12 lg:mb-0"
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          >
+            <motion.h1 
+              className="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white leading-tight"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+            >
               Decentralized{' '}
               <br className="hidden sm:block" />
               Telemedicine:{' '}
@@ -21,60 +56,96 @@ const TelemedicineHero: React.FC<HeroProps> = ({ className = '' }) => {
               <span className="text-green-500">Smart</span>, Accessible{' '}
               <br className="hidden sm:block" />
               Healthcare
-            </h1>
+            </motion.h1>
             
-            <p className="mt-6 text-lg sm:text-xl text-gray-600 leading-relaxed max-w-xl">
+            <motion.p 
+              className="mt-6 text-lg sm:text-xl text-gray-600 dark:text-gray-300 leading-relaxed max-w-xl"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+            >
               AI-powered symptom triage with blockchain-secured payments. 
               Connect with verified doctors instantly.
-            </p>
+            </motion.p>
 
             {/* CTA Buttons */}
-            <div className="mt-8 flex flex-col sm:flex-row gap-4">
-              <button className="bg-cyan-500 hover:bg-cyan-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors duration-200 flex items-center justify-center space-x-2">
+            <motion.div 
+              className="mt-8 flex flex-col sm:flex-row gap-4"
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.6, ease: "easeOut" }}
+            >
+              <motion.button 
+                onClick={handlePatientStart}
+                disabled={isLoading}
+                className="bg-cyan-500 hover:bg-cyan-600 disabled:opacity-50 disabled:cursor-not-allowed text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-200 flex items-center justify-center space-x-2"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
                 <Users className="w-5 h-5" />
-                <span>Get Started as Patient</span>
-              </button>
-              <button className="bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-lg font-semibold text-lg transition-colors duration-200 flex items-center justify-center space-x-2">
+                <span>{isLoading ? 'Connecting...' : 'Get Started as Patient'}</span>
+              </motion.button>
+              <motion.button 
+                onClick={handleDoctorStart}
+                disabled={isLoading}
+                className="bg-green-500 hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed text-white px-8 py-4 rounded-lg font-semibold text-lg transition-all duration-200 flex items-center justify-center space-x-2"
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+              >
                 <Stethoscope className="w-5 h-5" />
-                <span>Join as Doctor</span>
-              </button>
-            </div>
+                <span>{isLoading ? 'Connecting...' : 'Join as Doctor'}</span>
+              </motion.button>
+            </motion.div>
 
             {/* Feature highlights */}
-            <div className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6">
+            <motion.div 
+              className="mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6"
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.8, delay: 0.8, ease: "easeOut" }}
+            >
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <Shield className="w-5 h-5 text-blue-600" />
+                <div className="w-10 h-10 bg-blue-100 dark:bg-blue-900 rounded-lg flex items-center justify-center">
+                  <Shield className="w-5 h-5 text-blue-600 dark:text-blue-400" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900">Blockchain Secure</h3>
-                  <p className="text-sm text-gray-600">End-to-end encryption</p>
+                  <h3 className="font-semibold text-gray-900 dark:text-white">Blockchain Secure</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">End-to-end encryption</p>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                  <Brain className="w-5 h-5 text-green-600" />
+                <div className="w-10 h-10 bg-green-100 dark:bg-green-900 rounded-lg flex items-center justify-center">
+                  <Brain className="w-5 h-5 text-green-600 dark:text-green-400" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900">AI-Powered</h3>
-                  <p className="text-sm text-gray-600">Smart symptom analysis</p>
+                  <h3 className="font-semibold text-gray-900 dark:text-white">AI-Powered</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">Smart symptom analysis</p>
                 </div>
               </div>
               <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-cyan-100 rounded-lg flex items-center justify-center">
-                  <Users className="w-5 h-5 text-cyan-600" />
+                <div className="w-10 h-10 bg-cyan-100 dark:bg-cyan-900 rounded-lg flex items-center justify-center">
+                  <Users className="w-5 h-5 text-cyan-600 dark:text-cyan-400" />
                 </div>
                 <div>
-                  <h3 className="font-semibold text-gray-900">Verified Doctors</h3>
-                  <p className="text-sm text-gray-600">Licensed professionals</p>
+                  <h3 className="font-semibold text-gray-900 dark:text-white">Verified Doctors</h3>
+                  <p className="text-sm text-gray-600 dark:text-gray-300">Licensed professionals</p>
                 </div>
               </div>
-            </div>
-          </div>
+            </motion.div>
+          </motion.div>
 
           {/* Right Illustration */}
-          <div className="relative">
-            <div className="relative bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600 rounded-3xl p-8 lg:p-12 overflow-hidden">
+          <motion.div 
+            className="relative"
+            initial={{ opacity: 0, x: 50 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ duration: 0.8, delay: 0.4, ease: "easeOut" }}
+          >
+            <motion.div 
+              className="relative bg-gradient-to-br from-blue-400 via-blue-500 to-blue-600 rounded-3xl p-8 lg:p-12 overflow-hidden"
+              whileHover={{ scale: 1.02 }}
+              transition={{ duration: 0.3 }}
+            >
               {/* Background bubbles */}
               <div className="absolute top-4 right-4 w-4 h-4 bg-white opacity-20 rounded-full"></div>
               <div className="absolute top-12 right-12 w-2 h-2 bg-white opacity-30 rounded-full"></div>
@@ -141,12 +212,34 @@ const TelemedicineHero: React.FC<HeroProps> = ({ className = '' }) => {
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* Floating elements */}
-            <div className="absolute -top-4 -left-4 w-8 h-8 bg-cyan-500 rounded-full opacity-80 animate-bounce"></div>
-            <div className="absolute -bottom-4 -right-4 w-6 h-6 bg-green-500 rounded-full opacity-80 animate-pulse"></div>
-          </div>
+              {/* Floating elements */}
+              <motion.div 
+                className="absolute -top-4 -left-4 w-8 h-8 bg-cyan-500 rounded-full opacity-80"
+                animate={{ 
+                  y: [0, -10, 0],
+                  rotate: [0, 180, 360]
+                }}
+                transition={{ 
+                  duration: 3,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              ></motion.div>
+              <motion.div 
+                className="absolute -bottom-4 -right-4 w-6 h-6 bg-green-500 rounded-full opacity-80"
+                animate={{ 
+                  scale: [1, 1.2, 1],
+                  opacity: [0.8, 1, 0.8]
+                }}
+                transition={{ 
+                  duration: 2,
+                  repeat: Infinity,
+                  ease: "easeInOut"
+                }}
+              ></motion.div>
+            </motion.div>
+          </motion.div>
         </div>
       </div>
     </section>

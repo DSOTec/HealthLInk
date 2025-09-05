@@ -65,6 +65,7 @@ export interface DoctorPayment {
   status: 'completed' | 'pending' | 'failed';
   transactionHash: string;
   service: string;
+  description: string;
 }
 
 interface DoctorContextType {
@@ -229,7 +230,8 @@ export const DoctorProvider: React.FC<DoctorProviderProps> = ({ children }) => {
           date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000),
           status: 'completed',
           transactionHash: '0x742d35Cc6634C0532925a3b8D4C9db96590c2b02',
-          service: 'Cardiology Consultation'
+          service: 'Cardiology Consultation',
+          description: 'Initial cardiology consultation and ECG review'
         },
         {
           id: '2',
@@ -239,7 +241,8 @@ export const DoctorProvider: React.FC<DoctorProviderProps> = ({ children }) => {
           date: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000),
           status: 'completed',
           transactionHash: '0x8f2a7b1c9d3e4f5a6b7c8d9e0f1a2b3c4d5e6f7a',
-          service: 'Heart Rhythm Evaluation'
+          service: 'Heart Rhythm Evaluation',
+          description: 'Follow-up heart rhythm monitoring and analysis'
         },
         {
           id: '3',
@@ -249,7 +252,8 @@ export const DoctorProvider: React.FC<DoctorProviderProps> = ({ children }) => {
           date: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000),
           status: 'pending',
           transactionHash: '',
-          service: 'Comprehensive Cardiac Assessment'
+          service: 'Comprehensive Cardiac Assessment',
+          description: 'Complete cardiac workup including stress test'
         }
       ];
       setPayments(mockPayments);

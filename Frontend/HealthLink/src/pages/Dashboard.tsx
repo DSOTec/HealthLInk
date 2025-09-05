@@ -1,16 +1,18 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
+import { motion } from 'framer-motion';
 import Layout from '../components/Layout';
 import DashboardNavbar from '../components/DashboardNavbar';
-import Chatbot from '../components/Dashboard/Chatbot';
+// Removed Chatbot import - will be replaced with floating chatbot
 import QuickActions from '../components/Dashboard/QuickActions';
 import ActivityFeed from '../components/Dashboard/ActivityFeed';
 import Notifications from '../components/Dashboard/Notifications';
-import FileUploadModal from '../components/modals/FileUploadModal';
-import PaymentModal from '../components/modals/PaymentModal';
+// Removed unused modal imports
+// Removed ThemeToggle import - now handled in navbar
+import FloatingChatbot from '../components/common/FloatingChatbot';
 import { useToast } from '../components/ToastContainer';
+// import { useAppointments } from '../contexts/AppointmentContext';
 import type { 
-  ChatMessage, 
   Activity, 
   Notification, 
   HealthTip, 
@@ -18,12 +20,13 @@ import type {
 } from '../types/dashboard';
 
 const Dashboard: React.FC = () => {
-  const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>(mockNotifications);
-  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
-  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  // Removed modal states - will be handled elsewhere
   const navigate = useNavigate();
   const { showToast } = useToast();
+  // const { getPatientAppointments } = useAppointments();
+  // Get current patient's appointments (for future use)
+  // const patientAppointments = getPatientAppointments('Current Patient');
 
   // Mock data
 
@@ -84,44 +87,30 @@ const Dashboard: React.FC = () => {
     navigate('/payments');
   };
 
-  const handleUploadRecord = () => {
-    setIsUploadModalOpen(true);
-  };
-
-  const handleMakePayment = () => {
-    setIsPaymentModalOpen(true);
-  };
+  // Removed unused handlers
 
   const handleSettings = () => {
     navigate('/settings');
   };
 
-  const handleFileUpload = (file: File) => {
-    // Simulate file upload
-    showToast('success', `File "${file.name}" uploaded successfully!`);
-  };
-
-  const handlePayment = (amount: number, method: string) => {
-    // Simulate payment processing
-    showToast('success', `Payment of $${amount} HLUSD processed via ${method}!`);
-  };
+  // Removed unused handlers
 
   const mockQuickActions: QuickAction[] = [
     {
       id: '1',
-      title: 'Book a Doctor',
-      description: 'Schedule a consultation',
-      icon: 'calendar',
-      color: 'blue',
-      action: handleBookDoctor
+      title: 'Upload Medical Records',
+      description: 'Securely store your health documents',
+      color: 'bg-gradient-to-r from-blue-400 to-blue-600',
+      icon: 'upload',
+      action: () => showToast('success', 'Upload feature coming soon!')
     },
     {
       id: '2',
-      title: 'View Records',
-      description: 'Access health records',
-      icon: 'file',
-      color: 'green',
-      action: handleViewRecords
+      title: 'Make Payment',
+      description: 'Pay for consultations and services',
+      color: 'bg-gradient-to-r from-green-400 to-green-600',
+      icon: 'credit-card',
+      action: () => navigate('/payments')
     },
     {
       id: '3',
@@ -133,67 +122,30 @@ const Dashboard: React.FC = () => {
     },
     {
       id: '4',
-      title: 'Upload Record',
-      description: 'Add new health record',
-      icon: 'upload',
-      color: 'orange',
-      action: handleUploadRecord
+      title: 'Book Doctor',
+      description: 'Schedule consultation',
+      icon: 'calendar',
+      color: 'bg-gradient-to-r from-purple-400 to-purple-600',
+      action: handleBookDoctor
     },
     {
       id: '5',
-      title: 'Make Payment',
-      description: 'Pay for services',
-      icon: 'dollar-sign',
-      color: 'red',
-      action: handleMakePayment
+      title: 'View Records',
+      description: 'Access medical history',
+      icon: 'file-text',
+      color: 'bg-gradient-to-r from-orange-400 to-orange-600',
+      action: handleViewRecords
     },
     {
       id: '6',
       title: 'Settings',
       description: 'Manage your account',
       icon: 'settings',
-      color: 'gray',
+      color: 'bg-gradient-to-r from-gray-400 to-gray-600',
       action: handleSettings
     }
   ];
 
-  const handleSendMessage = (message: string) => {
-    const userMessage: ChatMessage = {
-      id: Date.now().toString(),
-      content: message,
-      sender: 'user',
-      timestamp: new Date()
-    };
-
-    setChatMessages(prev => [...prev, userMessage]);
-
-    // Simulate AI response
-    setTimeout(() => {
-      const aiResponse: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        content: getAIResponse(message),
-        sender: 'ai',
-        timestamp: new Date()
-      };
-      setChatMessages(prev => [...prev, aiResponse]);
-    }, 1500);
-  };
-
-  const getAIResponse = (message: string): string => {
-    const lowerMessage = message.toLowerCase();
-    
-    if (lowerMessage.includes('symptom')) {
-      return "I can help you track your symptoms. Please describe what you're experiencing, and I'll provide some guidance and suggest if you should consult with a doctor.";
-    } else if (lowerMessage.includes('appointment') || lowerMessage.includes('book')) {
-      return "I can help you book an appointment! We have several verified doctors available. Would you like to see specialists in a particular area?";
-    } else if (lowerMessage.includes('record')) {
-      return "Your health records are securely stored on the blockchain. You can view your complete medical history, test results, and prescriptions in the Health Records section.";
-    } else if (lowerMessage.includes('payment')) {
-      return "You can view all your payment history and manage billing through your wallet. All transactions are secure and recorded on the blockchain using HLUSD tokens.";
-    } else {
-      return "Hello! I'm your AI health assistant. I can help you with booking appointments, tracking symptoms, accessing health records, and managing payments. How can I assist you today?";
-    }
-  };
 
   const handleMarkAsRead = (notificationId: string) => {
     setNotifications(prev => 
@@ -207,35 +159,52 @@ const Dashboard: React.FC = () => {
 
   return (
     <Layout>
-      <div className="flex flex-col h-screen bg-gray-100">
-        {/* Simplified Navbar */}
+      <div className="flex-1 overflow-y-auto bg-gray-50 dark:bg-gray-900 transition-colors duration-300">
         <DashboardNavbar />
-
-        {/* Dashboard Content */}
-        <main className="flex-1 overflow-y-auto p-6">
+        <motion.div 
+          className="p-4 md:p-6"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+        >
           <div className="max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
+            {/* Header */}
+            <motion.div 
+              className="mb-4 md:mb-6 flex flex-col sm:flex-row sm:items-center sm:justify-between"
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+            >
+              <div>
+                <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 dark:text-white mb-1">
+                  Welcome back, John!
+                </h1>
+                <p className="text-sm text-gray-600 dark:text-gray-300">
+                  Here's what's happening with your health today.
+                </p>
+              </div>
+            </motion.div>
+            <div className="grid grid-cols-1 xl:grid-cols-4 gap-4 md:gap-6">
               {/* Left Column - Main Content */}
-              <div className="xl:col-span-3 space-y-6">
-                {/* AI Chatbot */}
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-800 mb-4">AI Health Assistant</h2>
-                  <Chatbot 
-                    messages={chatMessages}
-                    onSendMessage={handleSendMessage}
-                  />
-                </div>
-
+              <div className="xl:col-span-3 space-y-4 md:space-y-6">
                 {/* Quick Actions */}
-                <div>
-                  <h2 className="text-2xl font-bold text-gray-800 mb-4">Quick Actions</h2>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.2 }}
+                >
+                  <h2 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-800 dark:text-white mb-3 md:mb-4">Quick Actions</h2>
                   <QuickActions actions={mockQuickActions} />
-                </div>
+                </motion.div>
 
                 {/* Activity Feed */}
-                <div>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.5, delay: 0.3 }}
+                >
                   <ActivityFeed activities={mockActivities} />
-                </div>
+                </motion.div>
               </div>
 
               {/* Right Column - Notifications */}
@@ -248,21 +217,11 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
           </div>
-        </main>
+        </motion.div>
       </div>
 
-      {/* Modals */}
-      <FileUploadModal
-        isOpen={isUploadModalOpen}
-        onClose={() => setIsUploadModalOpen(false)}
-        onUpload={handleFileUpload}
-      />
-      
-      <PaymentModal
-        isOpen={isPaymentModalOpen}
-        onClose={() => setIsPaymentModalOpen(false)}
-        onPayment={handlePayment}
-      />
+      {/* Modals removed - functionality moved to dedicated pages */}
+      <FloatingChatbot />
     </Layout>
   );
 };

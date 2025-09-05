@@ -20,8 +20,8 @@ const QuickActions: React.FC<QuickActionsProps> = ({ actions }) => {
               <span className="text-white text-lg">→</span>
             </div>
           </div>
-          <h3 className="text-white font-bold text-lg mb-2">{action.title}</h3>
-          <p className="text-white text-opacity-90 text-sm">{action.description}</p>
+          <h3 className="text-black font-bold text-lg mb-2">{action.title}</h3>
+          <p className="text-black text-opacity-90 text-sm">{action.description}</p>
         </div>
       ))}
     </div>

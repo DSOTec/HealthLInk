@@ -1,41 +1,49 @@
 
 import { Routes, Route } from 'react-router'
+import { Suspense, lazy } from 'react'
 import { WalletProvider } from './contexts/WalletContext'
 import { Web3Provider } from './contexts/Web3Context'
 import { DoctorProvider } from './contexts/DoctorContext'
+import { AppointmentProvider } from './contexts/AppointmentContext'
+import { ThemeProvider } from './contexts/ThemeContext'
 import ToastContainer from './components/ToastContainer'
 import ProtectedRoute from './components/ProtectedRoute'
 import LandingPage from './pages/LandingPage'
-import Dashboard from './pages/Dashboard'
-import Symptoms from './pages/Symptoms'
-import Doctors from './pages/Doctors'
-import HealthRecords from './pages/HealthRecords'
-import Settings from './pages/Settings'
-import Payments from './pages/Payments'
-import Web3Demo from './pages/Web3Demo'
 
-// Doctor Pages
-import DoctorDashboard from './pages/doctor/DoctorDashboard'
-import DoctorPatients from './pages/doctor/DoctorPatients'
-import DoctorAppointments from './pages/doctor/DoctorAppointments'
-import DoctorRecords from './pages/doctor/DoctorRecords'
-import DoctorConsultations from './pages/doctor/DoctorConsultations'
-import DoctorPaymentsPage from './pages/doctor/DoctorPaymentsPage'
-import DoctorSettingsPage from './pages/doctor/DoctorSettingsPage'
+// Lazy load patient pages
+const Dashboard = lazy(() => import('./pages/Dashboard'))
+const Symptoms = lazy(() => import('./pages/Symptoms'))
+const Doctors = lazy(() => import('./pages/Doctors'))
+const HealthRecords = lazy(() => import('./pages/HealthRecords'))
+const Settings = lazy(() => import('./pages/Settings'))
+const Payments = lazy(() => import('./pages/Payments'))
+
+// Lazy load doctor pages
+const DoctorDashboard = lazy(() => import('./pages/doctor/DoctorDashboard'))
+const DoctorPatients = lazy(() => import('./pages/doctor/DoctorPatients'))
+const DoctorAppointments = lazy(() => import('./pages/doctor/DoctorAppointments'))
+const DoctorRecords = lazy(() => import('./pages/doctor/DoctorRecords'))
+const DoctorConsultations = lazy(() => import('./pages/doctor/DoctorConsultations'))
+const DoctorPaymentsPage = lazy(() => import('./pages/doctor/DoctorPaymentsPage'))
+const DoctorSettingsPage = lazy(() => import('./pages/doctor/DoctorSettingsPage'))
 
 const App = () => {
   return (
-    <WalletProvider>
-      <Web3Provider>
-        <DoctorProvider>
-          <ToastContainer>
+    <ThemeProvider>
+      <WalletProvider>
+        <Web3Provider>
+          <DoctorProvider>
+            <AppointmentProvider>
+              <ToastContainer>
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route 
               path="/dashboard" 
               element={
                 <ProtectedRoute>
-                  <Dashboard />
+                  <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div></div>}>
+                    <Dashboard />
+                  </Suspense>
                 </ProtectedRoute>
               } 
             />
@@ -43,7 +51,9 @@ const App = () => {
               path="/symptoms" 
               element={
                 <ProtectedRoute>
-                  <Symptoms />
+                  <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div></div>}>
+                    <Symptoms />
+                  </Suspense>
                 </ProtectedRoute>
               } 
             />
@@ -51,7 +61,9 @@ const App = () => {
               path="/doctors" 
               element={
                 <ProtectedRoute>
-                  <Doctors />
+                  <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div></div>}>
+                    <Doctors />
+                  </Suspense>
                 </ProtectedRoute>
               } 
             />
@@ -59,7 +71,9 @@ const App = () => {
               path="/records" 
               element={
                 <ProtectedRoute>
-                  <HealthRecords />
+                  <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div></div>}>
+                    <HealthRecords />
+                  </Suspense>
                 </ProtectedRoute>
               } 
             />
@@ -67,7 +81,9 @@ const App = () => {
               path="/settings" 
               element={
                 <ProtectedRoute>
-                  <Settings />
+                  <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div></div>}>
+                    <Settings />
+                  </Suspense>
                 </ProtectedRoute>
               } 
             />
@@ -75,25 +91,22 @@ const App = () => {
               path="/payments" 
               element={
                 <ProtectedRoute>
-                  <Payments />
+                  <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div></div>}>
+                    <Payments />
+                  </Suspense>
                 </ProtectedRoute>
               } 
             />
-            <Route 
-              path="/web3-demo" 
-              element={
-                <ProtectedRoute>
-                  <Web3Demo />
-                </ProtectedRoute>
-              } 
-            />
+            {/* Removed Web3Demo route - keeping only actual wallet + payments logic */}
             
             {/* Doctor Routes */}
             <Route 
               path="/doctor/dashboard" 
               element={
                 <ProtectedRoute>
-                  <DoctorDashboard />
+                  <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div></div>}>
+                    <DoctorDashboard />
+                  </Suspense>
                 </ProtectedRoute>
               } 
             />
@@ -101,7 +114,9 @@ const App = () => {
               path="/doctor/patients" 
               element={
                 <ProtectedRoute>
-                  <DoctorPatients />
+                  <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div></div>}>
+                    <DoctorPatients />
+                  </Suspense>
                 </ProtectedRoute>
               } 
             />
@@ -109,7 +124,9 @@ const App = () => {
               path="/doctor/appointments" 
               element={
                 <ProtectedRoute>
-                  <DoctorAppointments />
+                  <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div></div>}>
+                    <DoctorAppointments />
+                  </Suspense>
                 </ProtectedRoute>
               } 
             />
@@ -117,7 +134,9 @@ const App = () => {
               path="/doctor/records" 
               element={
                 <ProtectedRoute>
-                  <DoctorRecords />
+                  <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div></div>}>
+                    <DoctorRecords />
+                  </Suspense>
                 </ProtectedRoute>
               } 
             />
@@ -125,7 +144,9 @@ const App = () => {
               path="/doctor/consultations" 
               element={
                 <ProtectedRoute>
-                  <DoctorConsultations />
+                  <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div></div>}>
+                    <DoctorConsultations />
+                  </Suspense>
                 </ProtectedRoute>
               } 
             />
@@ -133,7 +154,9 @@ const App = () => {
               path="/doctor/payments" 
               element={
                 <ProtectedRoute>
-                  <DoctorPaymentsPage />
+                  <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div></div>}>
+                    <DoctorPaymentsPage />
+                  </Suspense>
                 </ProtectedRoute>
               } 
             />
@@ -141,15 +164,19 @@ const App = () => {
               path="/doctor/settings" 
               element={
                 <ProtectedRoute>
-                  <DoctorSettingsPage />
+                  <Suspense fallback={<div className="min-h-screen flex items-center justify-center"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div></div>}>
+                    <DoctorSettingsPage />
+                  </Suspense>
                 </ProtectedRoute>
               } 
             />
           </Routes>
-          </ToastContainer>
-        </DoctorProvider>
-      </Web3Provider>
-    </WalletProvider>
+              </ToastContainer>
+            </AppointmentProvider>
+          </DoctorProvider>
+        </Web3Provider>
+      </WalletProvider>
+    </ThemeProvider>
   )
 }
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDoctor } from '../../contexts/DoctorContext';
-import { Search, Filter, Eye, Phone, Mail } from 'lucide-react';
+import { Search, Eye, Phone, Mail } from 'lucide-react';
 
 const PatientsTable: React.FC = () => {
   const { patients, setSelectedPatient } = useDoctor();

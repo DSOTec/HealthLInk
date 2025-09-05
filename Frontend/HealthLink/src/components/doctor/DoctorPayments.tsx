@@ -7,7 +7,6 @@ import {
   TrendingUp, 
   Calendar, 
   Download, 
-  Filter,
   Search,
   Eye,
   CreditCard,

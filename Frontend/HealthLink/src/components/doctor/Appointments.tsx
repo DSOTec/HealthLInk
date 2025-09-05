@@ -8,10 +8,7 @@ import {
   Video, 
   Phone, 
   MessageSquare,
-  Filter,
-  Plus,
-  ChevronLeft,
-  ChevronRight
+  Plus
 } from 'lucide-react';
 
 const Appointments: React.FC = () => {
@@ -19,7 +16,7 @@ const Appointments: React.FC = () => {
   const { showToast } = useToast();
   const [viewMode, setViewMode] = useState<'list' | 'calendar'>('list');
   const [filterStatus, setFilterStatus] = useState('all');
-  const [selectedDate, setSelectedDate] = useState(new Date());
+  // Removed unused selectedDate state
 
   const filteredAppointments = appointments.filter(appointment => {
     if (filterStatus === 'all') return true;
@@ -163,7 +160,7 @@ const Appointments: React.FC = () => {
             {filteredAppointments
               .sort((a, b) => a.date.getTime() - b.date.getTime())
               .map((appointment) => {
-                const { date, time } = formatDateTime(appointment.date);
+                const { time } = formatDateTime(appointment.date);
                 return (
                   <div key={appointment.id} className="border border-gray-200 rounded-lg p-6">
                     <div className="flex items-start justify-between">

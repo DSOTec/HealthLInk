@@ -15,7 +15,6 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
     { id: 'doctors', label: 'Doctors', icon: '👨‍⚕️', path: '/doctors' },
     { id: 'records', label: 'Health Records', icon: '📋', path: '/records' },
     { id: 'payments', label: 'Payments', icon: '💳', path: '/payments' },
-    { id: 'web3-demo', label: 'Web3 Demo', icon: '🔗', path: '/web3-demo' },
     { id: 'settings', label: 'Settings', icon: '⚙️', path: '/settings' },
   ];
 
@@ -51,10 +50,10 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen, onClose }) => {
         <div className="p-6 border-b border-gray-200 lg:pt-6">
           <div className="flex items-center space-x-3">
             <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-green-500 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">H</span>
+              <span className="text-white font-bold text-lg">M</span>
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-800">HealthLink</h1>
+              <h1 className="text-xl font-bold text-gray-800">MarpeLink</h1>
               <p className="text-xs text-gray-500">Decentralized Care</p>
             </div>
           </div>

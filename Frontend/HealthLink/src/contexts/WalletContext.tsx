@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, type ReactNode } from 'react';
+import React, { createContext, useContext, useState, type ReactNode } from 'react';
 import { ethers } from 'ethers';
 import detectEthereumProvider from '@metamask/detect-provider';
 
@@ -32,27 +32,7 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
   const [walletAddress, setWalletAddress] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  // Check if wallet is already connected on page load
-  useEffect(() => {
-    checkConnection();
-  }, []);
-
-  const checkConnection = async () => {
-    try {
-      const ethereum = await detectEthereumProvider();
-      if (ethereum && (ethereum as any).isMetaMask) {
-        const provider = new ethers.BrowserProvider(ethereum as any);
-        const accounts = await provider.listAccounts();
-        
-        if (accounts.length > 0) {
-          setWalletAddress(accounts[0].address);
-          setIsConnected(true);
-        }
-      }
-    } catch (error) {
-      console.error('Error checking connection:', error);
-    }
-  };
+  // Removed auto-reconnect logic - users must manually connect from landing page
 
   const connectWallet = async () => {
     setIsLoading(true);
@@ -92,9 +72,21 @@ export const WalletProvider: React.FC<WalletProviderProps> = ({ children }) => {
   const disconnectWallet = () => {
     setWalletAddress(null);
     setIsConnected(false);
+    setIsLoading(false);
     
-    // Clear localStorage if you're storing any wallet data
+    // Remove any stored wallet connection data
     localStorage.removeItem('walletConnected');
+    localStorage.removeItem('walletAddress');
+    
+    // Clean up event listeners
+    const ethereum = (window as any).ethereum;
+    if (ethereum) {
+      ethereum.removeAllListeners('accountsChanged');
+      ethereum.removeAllListeners('chainChanged');
+    }
+    
+    // Force redirect to landing page
+    window.location.href = '/';
   };
 
   const handleAccountsChanged = (accounts: string[]) => {
