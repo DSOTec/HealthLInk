@@ -1,9 +1,11 @@
 import React from 'react';
 import { useNavigate } from 'react-router';
-import { useWallet } from '../contexts/WalletContext';
+import { useWallet } from '../../contexts/WalletContext';
+import { useDoctor } from '../../contexts/DoctorContext';
 
-const DashboardNavbar: React.FC = () => {
+const DoctorNavbar: React.FC = () => {
   const { walletAddress, disconnectWallet } = useWallet();
+  const { doctorProfile } = useDoctor();
   const navigate = useNavigate();
 
   const formatAddress = (address: string) => {
@@ -22,25 +24,39 @@ const DashboardNavbar: React.FC = () => {
           {/* Logo */}
           <div className="flex items-center">
             <div className="flex-shrink-0 flex items-center">
-              <div className="w-8 h-8 bg-gradient-to-r from-blue-500 to-green-500 rounded-lg flex items-center justify-center">
+              <div className="w-8 h-8 bg-gradient-to-r from-green-500 to-blue-500 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">H</span>
               </div>
               <span className="ml-2 text-xl font-bold text-gray-900">HealthLink</span>
+              <span className="ml-2 text-sm font-medium text-green-600 bg-green-100 px-2 py-1 rounded-full">
+                Doctor Portal
+              </span>
             </div>
           </div>
 
-          {/* Greeting and Disconnect */}
+          {/* Doctor Greeting and Wallet Info */}
           <div className="flex items-center space-x-4">
-            {walletAddress && (
+            {doctorProfile && walletAddress && (
               <>
-                <span className="text-sm text-gray-700">
-                  Welcome, {formatAddress(walletAddress)}
-                </span>
+                <div className="hidden md:flex items-center space-x-2">
+                  <span className="text-sm text-gray-700">
+                    Welcome, Dr. {doctorProfile.name.split(' ').pop()}
+                  </span>
+                  <span className="text-xs text-gray-500">|</span>
+                  <span className="text-xs font-mono text-gray-600">
+                    {formatAddress(walletAddress)}
+                  </span>
+                </div>
+                <div className="md:hidden">
+                  <span className="text-sm text-gray-700">
+                    Dr. {doctorProfile.name.split(' ').pop()}
+                  </span>
+                </div>
                 <button
                   onClick={handleDisconnect}
                   className="bg-red-500 text-white rounded px-3 py-1 text-sm font-medium hover:bg-red-600 transition duration-200"
                 >
-                  Disconnect Wallet
+                  Disconnect
                 </button>
               </>
             )}
@@ -51,4 +67,4 @@ const DashboardNavbar: React.FC = () => {
   );
 };
 
-export default DashboardNavbar;
+export default DoctorNavbar;

@@ -1,10 +1,14 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router';
 import Layout from '../components/Layout';
 import DashboardNavbar from '../components/DashboardNavbar';
 import Chatbot from '../components/Dashboard/Chatbot';
 import QuickActions from '../components/Dashboard/QuickActions';
 import ActivityFeed from '../components/Dashboard/ActivityFeed';
 import Notifications from '../components/Dashboard/Notifications';
+import FileUploadModal from '../components/modals/FileUploadModal';
+import PaymentModal from '../components/modals/PaymentModal';
+import { useToast } from '../components/ToastContainer';
 import type { 
   ChatMessage, 
   Activity, 
@@ -16,6 +20,10 @@ import type {
 const Dashboard: React.FC = () => {
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([]);
   const [notifications, setNotifications] = useState<Notification[]>(mockNotifications);
+  const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+  const navigate = useNavigate();
+  const { showToast } = useToast();
 
   // Mock data
 
@@ -63,30 +71,89 @@ const Dashboard: React.FC = () => {
     category: 'Wellness'
   };
 
+  // Button handlers
+  const handleBookDoctor = () => {
+    navigate('/doctors');
+  };
+
+  const handleViewRecords = () => {
+    navigate('/records');
+  };
+
+  const handleCheckPayments = () => {
+    navigate('/payments');
+  };
+
+  const handleUploadRecord = () => {
+    setIsUploadModalOpen(true);
+  };
+
+  const handleMakePayment = () => {
+    setIsPaymentModalOpen(true);
+  };
+
+  const handleSettings = () => {
+    navigate('/settings');
+  };
+
+  const handleFileUpload = (file: File) => {
+    // Simulate file upload
+    showToast('success', `File "${file.name}" uploaded successfully!`);
+  };
+
+  const handlePayment = (amount: number, method: string) => {
+    // Simulate payment processing
+    showToast('success', `Payment of $${amount} HLUSD processed via ${method}!`);
+  };
+
   const mockQuickActions: QuickAction[] = [
     {
       id: '1',
       title: 'Book a Doctor',
-      description: 'Schedule consultation with verified healthcare providers',
-      icon: '👨‍⚕️',
-      color: 'bg-gradient-to-r from-blue-500 to-blue-600',
-      action: () => console.log('Book doctor clicked')
+      description: 'Schedule a consultation',
+      icon: 'calendar',
+      color: 'blue',
+      action: handleBookDoctor
     },
     {
       id: '2',
       title: 'View Records',
-      description: 'Access your secure health records on blockchain',
-      icon: '📋',
-      color: 'bg-gradient-to-r from-green-500 to-green-600',
-      action: () => console.log('View records clicked')
+      description: 'Access health records',
+      icon: 'file',
+      color: 'green',
+      action: handleViewRecords
     },
     {
       id: '3',
       title: 'Check Payments',
-      description: 'Review payment history and manage billing',
-      icon: '💳',
-      color: 'bg-gradient-to-r from-purple-500 to-purple-600',
-      action: () => console.log('Check payments clicked')
+      description: 'Review payment history',
+      icon: 'credit-card',
+      color: 'purple',
+      action: handleCheckPayments
+    },
+    {
+      id: '4',
+      title: 'Upload Record',
+      description: 'Add new health record',
+      icon: 'upload',
+      color: 'orange',
+      action: handleUploadRecord
+    },
+    {
+      id: '5',
+      title: 'Make Payment',
+      description: 'Pay for services',
+      icon: 'dollar-sign',
+      color: 'red',
+      action: handleMakePayment
+    },
+    {
+      id: '6',
+      title: 'Settings',
+      description: 'Manage your account',
+      icon: 'settings',
+      color: 'gray',
+      action: handleSettings
     }
   ];
 
@@ -140,7 +207,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <Layout>
-      <div className="flex flex-col h-full bg-gray-100">
+      <div className="flex flex-col h-screen bg-gray-100">
         {/* Simplified Navbar */}
         <DashboardNavbar />
 
@@ -183,6 +250,19 @@ const Dashboard: React.FC = () => {
           </div>
         </main>
       </div>
+
+      {/* Modals */}
+      <FileUploadModal
+        isOpen={isUploadModalOpen}
+        onClose={() => setIsUploadModalOpen(false)}
+        onUpload={handleFileUpload}
+      />
+      
+      <PaymentModal
+        isOpen={isPaymentModalOpen}
+        onClose={() => setIsPaymentModalOpen(false)}
+        onPayment={handlePayment}
+      />
     </Layout>
   );
 };

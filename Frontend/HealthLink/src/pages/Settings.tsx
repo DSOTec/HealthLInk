@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import Layout from '../components/Layout';
+import { useToast } from '../components/ToastContainer';
 import type { UserProfile } from '../types/pages';
 
 const Settings: React.FC = () => {
   const [activeTab, setActiveTab] = useState('profile');
   const [isSaving, setIsSaving] = useState(false);
   const [showPasswordChange, setShowPasswordChange] = useState(false);
+  const { showToast } = useToast();
 
   const [userProfile, setUserProfile] = useState<UserProfile>({
     id: '1',
@@ -53,13 +55,14 @@ const Settings: React.FC = () => {
     // Simulate API call
     setTimeout(() => {
       console.log('Profile saved:', userProfile);
+      showToast('success', 'Settings saved successfully!');
       setIsSaving(false);
     }, 1500);
   };
 
   const handlePasswordChange = async () => {
     if (passwordForm.newPassword !== passwordForm.confirmPassword) {
-      alert('New passwords do not match');
+      showToast('error', 'New passwords do not match');
       return;
     }
     
@@ -67,6 +70,7 @@ const Settings: React.FC = () => {
     // Simulate API call
     setTimeout(() => {
       console.log('Password changed');
+      showToast('success', 'Password updated successfully!');
       setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
       setShowPasswordChange(false);
       setIsSaving(false);
@@ -566,7 +570,9 @@ const Settings: React.FC = () => {
 
                 <div className="flex justify-end">
                   <button
-                    onClick={() => console.log('Notification preferences saved')}
+                    onClick={() => {
+                      showToast('success', 'Notification preferences saved!');
+                    }}
                     className="bg-blue-600 text-white py-2 px-6 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
                   >
                     Save Preferences

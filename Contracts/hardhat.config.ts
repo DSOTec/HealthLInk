@@ -5,7 +5,7 @@ import "@nomicfoundation/hardhat-toolbox";
 import { vars } from "hardhat/config";
 
 const PRIVATE_KEY = vars.get("PRIVATE_KEY");
-const ARBISCAN_API_KEY = vars.get("ARBISCAN_API_KEY", "");
+const ARBISCAN_API_KEY = vars.get("ARBISCAN_API_KEY", "YourApiKeyToken");
 
 const config: HardhatUserConfig = {
   solidity: "0.8.20",
@@ -18,7 +18,7 @@ const config: HardhatUserConfig = {
   },
   etherscan: {
     apiKey: {
-      arbitrumSepolia: ARBISCAN_API_KEY,
+      arbitrumSepolia: ARBISCAN_API_KEY || "dummy-key",
     },
     customChains: [
       {

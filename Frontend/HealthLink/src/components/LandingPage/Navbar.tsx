@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Menu, X } from 'lucide-react';
+import { useWallet } from '../../contexts/WalletContext';
 
 interface NavbarProps {
   className?: string;
@@ -7,9 +8,22 @@ interface NavbarProps {
 
 const Navbar: React.FC<NavbarProps> = ({ className = '' }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { isConnected, walletAddress, connectWallet, isLoading } = useWallet();
 
   const toggleMenu = () => {
     setIsMenuOpen(!isMenuOpen);
+  };
+
+  const handleConnectWallet = async () => {
+    try {
+      await connectWallet();
+    } catch (error: any) {
+      alert(error.message);
+    }
+  };
+
+  const formatAddress = (address: string) => {
+    return `${address.slice(0, 6)}...${address.slice(-4)}`;
   };
 
   return (
@@ -52,20 +66,29 @@ const Navbar: React.FC<NavbarProps> = ({ className = '' }) => {
             </div>
           </div>
 
-          {/* Desktop Auth Buttons */}
+          {/* Desktop Wallet Button */}
           <div className="hidden md:flex items-center space-x-4">
-            <button
-              type="button"
-              className="text-gray-600 hover:text-gray-900 px-4 py-2 text-sm font-medium transition-colors duration-200"
-            >
-              Sign In
-            </button>
-            <button
-              type="button"
-              className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200"
-            >
-              Connect Wallet
-            </button>
+            {!isConnected ? (
+              <button
+                type="button"
+                onClick={handleConnectWallet}
+                disabled={isLoading}
+                className="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center"
+              >
+                {isLoading ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    Connecting...
+                  </>
+                ) : (
+                  'Connect Wallet'
+                )}
+              </button>
+            ) : (
+              <div className="text-sm font-medium text-gray-700">
+                {formatAddress(walletAddress!)}
+              </div>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -113,21 +136,31 @@ const Navbar: React.FC<NavbarProps> = ({ className = '' }) => {
             </a>
           </div>
           <div className="pt-4 pb-3 border-t border-gray-200">
-            <div className="flex items-center px-5 space-y-3 flex-col">
-              <button
-                type="button"
-                className="w-full text-gray-600 hover:text-gray-900 px-4 py-2 text-sm font-medium text-center"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Sign In
-              </button>
-              <button
-                type="button"
-                className="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                Sign Up
-              </button>
+            <div className="flex items-center px-5">
+              {!isConnected ? (
+                <button
+                  type="button"
+                  onClick={() => {
+                    handleConnectWallet();
+                    setIsMenuOpen(false);
+                  }}
+                  disabled={isLoading}
+                  className="w-full bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                >
+                  {isLoading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                      Connecting...
+                    </>
+                  ) : (
+                    'Connect Wallet'
+                  )}
+                </button>
+              ) : (
+                <div className="w-full text-center text-sm font-medium text-gray-700">
+                  {formatAddress(walletAddress!)}
+                </div>
+              )}
             </div>
           </div>
         </div>
