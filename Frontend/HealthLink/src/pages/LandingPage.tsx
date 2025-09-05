@@ -15,12 +15,16 @@ const LandingPage = () => {
   // Redirect to dashboard if wallet is already connected
   useEffect(() => {
     if (isConnected && walletAddress) {
-      navigate('/dashboard');
+      // Check if user prefers doctor dashboard (could be based on localStorage or user preference)
+      const isDoctorMode = localStorage.getItem('healthlink_user_type') === 'doctor';
+      navigate(isDoctorMode ? '/doctor/dashboard' : '/dashboard');
     }
   }, [isConnected, walletAddress, navigate]);
 
-  const handleConnectWallet = async () => {
+  const handleConnectWallet = async (userType: 'patient' | 'doctor' = 'patient') => {
     try {
+      // Store user type preference
+      localStorage.setItem('healthlink_user_type', userType);
       await connectWallet();
       // Navigation will happen automatically via useEffect
     } catch (error: any) {
@@ -43,20 +47,49 @@ const LandingPage = () => {
           </p>
           
           {!isConnected ? (
-            <button
-              onClick={handleConnectWallet}
-              disabled={isLoading}
-              className="bg-blue-600 text-white rounded px-8 py-4 text-lg font-semibold hover:bg-blue-700 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center mx-auto"
-            >
-              {isLoading ? (
-                <>
-                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
-                  Connecting...
-                </>
-              ) : (
-                'Connect Wallet'
-              )}
-            </button>
+            <div className="space-y-4">
+              <p className="text-lg text-blue-100 mb-6">Choose your role to get started:</p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <button
+                  onClick={() => handleConnectWallet('patient')}
+                  disabled={isLoading}
+                  className="bg-blue-600 text-white rounded px-8 py-4 text-lg font-semibold hover:bg-blue-700 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                >
+                  {isLoading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                      Connecting...
+                    </>
+                  ) : (
+                    <>
+                      <svg className="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fillRule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clipRule="evenodd" />
+                      </svg>
+                      I'm a Patient
+                    </>
+                  )}
+                </button>
+                <button
+                  onClick={() => handleConnectWallet('doctor')}
+                  disabled={isLoading}
+                  className="bg-green-600 text-white rounded px-8 py-4 text-lg font-semibold hover:bg-green-700 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center"
+                >
+                  {isLoading ? (
+                    <>
+                      <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white mr-2"></div>
+                      Connecting...
+                    </>
+                  ) : (
+                    <>
+                      <svg className="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      I'm a Doctor
+                    </>
+                  )}
+                </button>
+              </div>
+            </div>
           ) : (
             <div className="bg-green-500 text-white rounded px-8 py-4 text-lg font-semibold inline-flex items-center">
               <svg className="h-5 w-5 mr-2" fill="currentColor" viewBox="0 0 20 20">

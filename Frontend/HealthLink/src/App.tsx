@@ -2,6 +2,7 @@
 import { Routes, Route } from 'react-router'
 import { WalletProvider } from './contexts/WalletContext'
 import { Web3Provider } from './contexts/Web3Context'
+import { DoctorProvider } from './contexts/DoctorContext'
 import ToastContainer from './components/ToastContainer'
 import ProtectedRoute from './components/ProtectedRoute'
 import LandingPage from './pages/LandingPage'
@@ -13,11 +14,21 @@ import Settings from './pages/Settings'
 import Payments from './pages/Payments'
 import Web3Demo from './pages/Web3Demo'
 
+// Doctor Pages
+import DoctorDashboard from './pages/doctor/DoctorDashboard'
+import DoctorPatients from './pages/doctor/DoctorPatients'
+import DoctorAppointments from './pages/doctor/DoctorAppointments'
+import DoctorRecords from './pages/doctor/DoctorRecords'
+import DoctorConsultations from './pages/doctor/DoctorConsultations'
+import DoctorPaymentsPage from './pages/doctor/DoctorPaymentsPage'
+import DoctorSettingsPage from './pages/doctor/DoctorSettingsPage'
+
 const App = () => {
   return (
     <WalletProvider>
       <Web3Provider>
-        <ToastContainer>
+        <DoctorProvider>
+          <ToastContainer>
           <Routes>
             <Route path="/" element={<LandingPage />} />
             <Route 
@@ -76,8 +87,67 @@ const App = () => {
                 </ProtectedRoute>
               } 
             />
+            
+            {/* Doctor Routes */}
+            <Route 
+              path="/doctor/dashboard" 
+              element={
+                <ProtectedRoute>
+                  <DoctorDashboard />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/doctor/patients" 
+              element={
+                <ProtectedRoute>
+                  <DoctorPatients />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/doctor/appointments" 
+              element={
+                <ProtectedRoute>
+                  <DoctorAppointments />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/doctor/records" 
+              element={
+                <ProtectedRoute>
+                  <DoctorRecords />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/doctor/consultations" 
+              element={
+                <ProtectedRoute>
+                  <DoctorConsultations />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/doctor/payments" 
+              element={
+                <ProtectedRoute>
+                  <DoctorPaymentsPage />
+                </ProtectedRoute>
+              } 
+            />
+            <Route 
+              path="/doctor/settings" 
+              element={
+                <ProtectedRoute>
+                  <DoctorSettingsPage />
+                </ProtectedRoute>
+              } 
+            />
           </Routes>
-        </ToastContainer>
+          </ToastContainer>
+        </DoctorProvider>
       </Web3Provider>
     </WalletProvider>
   )

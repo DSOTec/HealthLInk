@@ -4,6 +4,7 @@ import { useWallet } from './WalletContext';
 export interface DoctorProfile {
   id: string;
   name: string;
+  specialty: string;
   specialization: string;
   yearsOfExperience: number;
   consultationFee: number;
@@ -70,6 +71,7 @@ interface DoctorContextType {
   // Doctor profile
   doctorProfile: DoctorProfile | null;
   setDoctorProfile: (profile: DoctorProfile) => void;
+  updateDoctorProfile: (updates: Partial<DoctorProfile>) => void;
   
   // Patients
   patients: Patient[];
@@ -127,6 +129,7 @@ export const DoctorProvider: React.FC<DoctorProviderProps> = ({ children }) => {
       const mockDoctorProfile: DoctorProfile = {
         id: '1',
         name: 'Dr. Sarah Wilson',
+        specialty: 'Cardiology',
         specialization: 'Cardiology',
         yearsOfExperience: 12,
         consultationFee: 150,
@@ -271,6 +274,10 @@ export const DoctorProvider: React.FC<DoctorProviderProps> = ({ children }) => {
     setPrescriptions(prev => [...prev, prescription]);
   };
 
+  const updateDoctorProfile = (updates: Partial<DoctorProfile>) => {
+    setDoctorProfile(prev => prev ? { ...prev, ...updates } : null);
+  };
+
   const getTotalEarnings = () => {
     return payments
       .filter(payment => payment.status === 'completed')
@@ -289,9 +296,10 @@ export const DoctorProvider: React.FC<DoctorProviderProps> = ({ children }) => {
       .slice(0, 5);
   };
 
-  const value: DoctorContextType = {
+  const value = {
     doctorProfile,
     setDoctorProfile,
+    updateDoctorProfile,
     patients,
     addPatient,
     appointments,
@@ -304,7 +312,7 @@ export const DoctorProvider: React.FC<DoctorProviderProps> = ({ children }) => {
     setSelectedPatient,
     getTotalEarnings,
     getUpcomingAppointments,
-    getRecentPatients,
+    getRecentPatients
   };
 
   return (
